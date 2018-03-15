@@ -9,14 +9,14 @@ import org.apache.logging.log4j.Logger;
 public class Main {
 
     private static final String executionCenter   = Props.getExecutionCenter();
-    private static Logger logger                  = LogManager.getLogger("Samples Logger");
+    private static Logger logger                  = LogManager.getLogger("Sample Logger");
 
     /**
-     * Releasing the all the executions with the name that sent as  a system property
+     * Stopping all the executions with the name that sent as  a system property
      * @return JSON contains list of executions that stopped and unstopped
      * @throws UnirestException
      */
-    public static String releaseAllName() throws UnirestException {
+    public static String releaseByName() throws UnirestException {
         String executionsName = Props.getExecutionsName();
         String executionNamesJson = "{\"fields\": {\"name\": [\"" + executionsName + "\"] } }";
         logger.info("Trying to release executions with the name: " + executionsName);
@@ -24,11 +24,35 @@ public class Main {
     }
 
     /**
-     * Releasing the id's list (List should be sent as a system property,each id is separated with ';')
+     * Stopping all the executions with the name that sent as  a system property
      * @return JSON contains list of executions that stopped and unstopped
      * @throws UnirestException
      */
-    public static String releaseAllID() throws UnirestException {
+    public static String releaseByOwner() throws UnirestException {
+        String executionsName = Props.getExecutionsOwner();
+        String executionNamesJson = "{\"fields\": {\"owner\": [\"" + executionsName + "\"] } }";
+        logger.info("Trying to release executions with the name: " + executionsName);
+        return releaseRequest(executionNamesJson);
+    }
+
+    /**
+     * Stopping all the executions contains the textFilter - that sent as  a system property
+     * @return JSON contains list of executions that stopped and unstopped
+     * @throws UnirestException
+     */
+    public static String releaseByTextFilter() throws UnirestException {
+        String executionsName = Props.getTextFilter();
+        String executionNamesJson = "{\"fields\": {\"freeTextFilter\": [\"" + executionsName + "\"] } }";
+        logger.info("Trying to release executions with the name: " + executionsName);
+        return releaseRequest(executionNamesJson);
+    }
+
+    /**
+     * Stopping the id's list (List should be sent as a system property,each id is separated with ';')
+     * @return JSON contains list of executions that stopped and unstopped
+     * @throws UnirestException
+     */
+    public static String releaseByID() throws UnirestException {
         String[] executionsList = Props.getExecutionsID().split(";");
         String executionIDsJson = "{ {\"fields\": \"id\": [";
         for(String id: executionsList) {
@@ -57,10 +81,16 @@ public class Main {
         if (!Props.getToken().equalsIgnoreCase("") && !Props.getCloudName().equalsIgnoreCase("")){
             String response = "";
             if (!Props.getExecutionsID().equalsIgnoreCase("")){
-                response = releaseAllID();
+                response = releaseByID();
             }
             else if (!Props.getExecutionsName().equalsIgnoreCase("")){
-                response = releaseAllName();
+                response = releaseByName();
+            }
+            else if (!Props.getExecutionsOwner().equalsIgnoreCase("")){
+                response = releaseByOwner();
+            }
+            else if (!Props.getTextFilter().equalsIgnoreCase("")){
+                response = releaseByTextFilter();
             }
             if (!response.equalsIgnoreCase("")) {
                 String[] stoppedExecutions = response.substring(response.indexOf(":[") + 2, response.indexOf("],\"unStoppedExecutions\":")).split(",");
