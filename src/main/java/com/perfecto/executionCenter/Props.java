@@ -5,7 +5,7 @@ public class Props {
     private static String cloudName         = System.getProperty("cloudName", "");
     private static String securityToken     = System.getProperty("token", "");
     private static String executionsID      = System.getProperty("executionsID", "");
-    private static String executionsName    = System.getProperty("executionsID", "");
+    private static String executionsName    = System.getProperty("executionsName", "");
     private static String executionsOwner   = System.getProperty("executionsOwner", "");
     private static String textFilter        = System.getProperty("textFilter", "");
 

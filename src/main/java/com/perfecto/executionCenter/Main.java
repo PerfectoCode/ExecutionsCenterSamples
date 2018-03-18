@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static final String executionCenter   = Props.getExecutionCenter();
-    private static Logger logger                  = LogManager.getLogger("Sample Logger");
+    private static final String executionCenterStop     = Props.getExecutionCenter() + "/execution-manager/api/v1/executions/stop";
+    private static Logger logger                        = LogManager.getLogger("Sample Logger");
 
     /**
      * Stopping all the executions with the name that sent as  a system property
@@ -31,7 +31,7 @@ public class Main {
     public static String releaseByOwner() throws UnirestException {
         String executionsName = Props.getExecutionsOwner();
         String executionNamesJson = "{\"fields\": {\"owner\": [\"" + executionsName + "\"] } }";
-        logger.info("Trying to release executions with the name: " + executionsName);
+        logger.info("Trying to release executions with the owner: " + executionsName);
         return releaseRequest(executionNamesJson);
     }
 
@@ -41,9 +41,9 @@ public class Main {
      * @throws UnirestException
      */
     public static String releaseByTextFilter() throws UnirestException {
-        String executionsName = Props.getTextFilter();
-        String executionNamesJson = "{\"fields\": {\"freeTextFilter\": [\"" + executionsName + "\"] } }";
-        logger.info("Trying to release executions with the name: " + executionsName);
+        String text = Props.getTextFilter();
+        String executionNamesJson = "{\"freeTextFilter\": \"" + text + "\" }";
+        logger.info("Trying to release executions that contains the text: " + text);
         return releaseRequest(executionNamesJson);
     }
 
@@ -54,7 +54,7 @@ public class Main {
      */
     public static String releaseByID() throws UnirestException {
         String[] executionsList = Props.getExecutionsID().split(";");
-        String executionIDsJson = "{ {\"fields\": \"id\": [";
+        String executionIDsJson = "{\"fields\": {\"id\": [";
         for(String id: executionsList) {
             executionIDsJson = executionIDsJson + "\"" + id + "\",";
         }
@@ -70,7 +70,7 @@ public class Main {
      * @throws UnirestException
      */
     public static String releaseRequest(String body) throws UnirestException {
-        HttpResponse<String> jsonResponse = Unirest.post(executionCenter)
+        HttpResponse<String> jsonResponse = Unirest.post(executionCenterStop)
                 .header("Content-Type", "application/json")
                 .header("Perfecto-Authorization", Props.getToken())
                 .body(body).asString();
@@ -94,11 +94,14 @@ public class Main {
             }
             if (!response.equalsIgnoreCase("")) {
                 String[] stoppedExecutions = response.substring(response.indexOf(":[") + 2, response.indexOf("],\"unStoppedExecutions\":")).split(",");
-                logger.info("Stopped executions:");
-                int i=1;
-                for (String execution : stoppedExecutions) {
-                    logger.info("#" + (i++) + " " + execution);
-
+                if (!stoppedExecutions[0].equalsIgnoreCase("")) {
+                    logger.info("Stopped executions:");
+                    int i = 1;
+                    for (String execution : stoppedExecutions) {
+                        logger.info("#" + (i++) + " " + execution);
+                    }
+                } else {
+                    logger.info("No executions found !");
                 }
             }else{
                 logger.error("Response came back empty");

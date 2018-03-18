@@ -22,6 +22,6 @@ task wrapper(type: Wrapper) {
 
 task runRelease(type:JavaExec){
     systemProperties = System.getProperties()
-    main = "com.perfecto.macRelease.Main"
+    main = "com.perfecto.executionCenter.Main"
     classpath = sourceSets.main.runtimeClasspath
 }
