@@ -12,7 +12,7 @@ public class Main {
     private static Logger logger                        = LogManager.getLogger("Sample Logger");
 
     /**
-     * Stopping all the executions with the name that sent as  a system property
+     * Stopping all the executions with the name that (sent as  a system property)
      * @return JSON contains list of executions that stopped and unstopped
      * @throws UnirestException
      */
@@ -24,8 +24,8 @@ public class Main {
     }
 
     /**
-     * Stopping all the executions with the name that sent as  a system property
-     * @return JSON contains list of executions that stopped and unstopped
+     * Stopping all the executions with the owner name (sent as  a system property)
+     * @return List of stopped and unstopped executions
      * @throws UnirestException
      */
     public static String releaseByOwner() throws UnirestException {
@@ -36,8 +36,8 @@ public class Main {
     }
 
     /**
-     * Stopping all the executions contains the textFilter - that sent as  a system property
-     * @return JSON contains list of executions that stopped and unstopped
+     * Stopping all the executions that contains the textFilter - that sent as  a system property
+     * @return List of stopped and unstopped executions
      * @throws UnirestException
      */
     public static String releaseByTextFilter() throws UnirestException {
@@ -49,7 +49,7 @@ public class Main {
 
     /**
      * Stopping the id's list (List should be sent as a system property,each id is separated with ';')
-     * @return JSON contains list of executions that stopped and unstopped
+     * @return List of stopped and unstopped executions
      * @throws UnirestException
      */
     public static String releaseByID() throws UnirestException {
@@ -65,7 +65,7 @@ public class Main {
 
     /**
      * Sending request to the execution center API
-     * @param body - ID's list or the name of the executions we want to stop
+     * @param body - The executions we want to stop
      * @return the response
      * @throws UnirestException
      */
